@@ -37,6 +37,12 @@ frontend/
 └── vite.config.js       # Vite configuration
 ```
 
+## UX highlights
+- **Lifecycle navigation** – the sidebar promotes Dashboard access separately and links Expectations → Requirements → Change Requests with directional cues and an "Updated Requirements" loopback so teams understand the continuous flow.
+- **AI copilot search** – the centered topbar search accepts natural-language prompts, groups results by entity type, and exposes a "Notify Project Manager" fallback when nothing matches.
+- **Quick actions** – consistent create buttons for each artifact type live in the header dropdown and in the CRUD tables.
+- **Detail & linkage modals** – expectation, requirement, and change request tables all open detail drawers with tabs for overview, history, analysis, links, and discussion, plus linkage workflows to keep artifacts connected.
+
 ## Available screens
 - **Workspace** – KPI cards, expectation triage, requirement list and change control board.
 - **Intake wizard** – form for transcripts, impact scoring options, dynamic metric configuration and duplicate/conflict toggles.

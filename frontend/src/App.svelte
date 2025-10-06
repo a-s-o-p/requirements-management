@@ -26,6 +26,9 @@
     { id: 'changeRequests', label: 'Change Requests', icon: 'arrows-right-left' }
   ];
 
+  const dashboardNav = primaryNav[0];
+  const lifecycleNav = primaryNav.slice(1);
+
   let activeView = 'dashboard';
   let sidebarCollapsed = false;
   let isMobileMenuOpen = false;
@@ -587,52 +590,85 @@
     </div>
     <nav class="mt-2 flex-1 overflow-y-auto px-3">
       <div class="space-y-1">
-        {#each primaryNav as item}
-          <button
-            class={`group flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
-              activeView === item.id
-                ? 'bg-indigo-500/20 text-indigo-200 ring-1 ring-inset ring-indigo-400/50'
-                : 'text-slate-300 hover:bg-slate-800/60 hover:text-white focus-visible:ring-1 focus-visible:ring-indigo-400/50'
-            }`}
-            on:click={() => {
-              activeView = item.id;
-              isMobileMenuOpen = false;
-            }}
-          >
-            <span class="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80">
-              {@html sidebarIcon(item.icon)}
-            </span>
-            <span class="text-left">{item.label}</span>
-          </button>
-        {/each}
+        <button
+          class={`group flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
+            activeView === dashboardNav.id
+              ? 'bg-indigo-500/20 text-indigo-200 ring-1 ring-inset ring-indigo-400/50'
+              : 'text-slate-300 hover:bg-slate-800/60 hover:text-white focus-visible:ring-1 focus-visible:ring-indigo-400/50'
+          }`}
+          on:click={() => {
+            activeView = dashboardNav.id;
+            isMobileMenuOpen = false;
+          }}
+        >
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80">
+            {@html sidebarIcon(dashboardNav.icon)}
+          </span>
+          <span class="text-left">{dashboardNav.label}</span>
+        </button>
       </div>
-      <div class="mt-6 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 shadow-inner">
-        <div class="flex items-center justify-between">
-          <h3 class="text-sm font-semibold text-slate-100">Flow Connections</h3>
-          <span class="rounded-full bg-indigo-500/20 px-2 py-0.5 text-[11px] uppercase tracking-wide text-indigo-200">Lifecycle</span>
+      <div class="mt-6">
+        <div class="flex items-center justify-between px-1">
+          <h3 class="text-sm font-semibold text-slate-100">Lifecycle Flow</h3>
+          <span class="rounded-full bg-indigo-500/20 px-2 py-0.5 text-[11px] uppercase tracking-wide text-indigo-200">Guided</span>
         </div>
-        <p class="mt-2 text-xs leading-relaxed text-slate-400">
-          Expectations lead to Requirements. Requirements can have Change Requests. Change Requests lead to new, updated Requirements.
-        </p>
-        <div class="mt-4 space-y-2 text-sm">
-          <button class="flex w-full items-center justify-between rounded-xl border border-slate-800 bg-slate-900/80 px-3 py-2 text-left text-slate-200 transition hover:border-indigo-500/50 hover:bg-indigo-500/10" on:click={() => navigateTo('expectations')}>
-            <span>Expectations</span>
-            <span class="text-xs text-slate-500">{summaryCounts.expectations}</span>
-          </button>
-          <div class="flex items-center justify-center">
-            <div class="h-10 w-0.5 bg-gradient-to-b from-indigo-500/60 via-sky-500/60 to-emerald-500/60"></div>
+        <div class="mt-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 shadow-inner">
+          <p class="text-xs leading-relaxed text-slate-400">
+            Expectations move forward into Requirements, which evolve through Change Requests and return as updated Requirements.
+          </p>
+          <div class="mt-4 flex flex-col gap-3 text-sm">
+            {#each lifecycleNav as item, index}
+              <div class="relative">
+                <button
+                  class={`group flex w-full items-center justify-between rounded-2xl border px-3 py-2 text-left transition ${
+                    activeView === item.id
+                      ? 'border-indigo-400/60 bg-indigo-500/15 text-indigo-100 shadow-[0_0_0_1px] shadow-indigo-400/40'
+                      : 'border-slate-800 bg-slate-900/70 text-slate-200 hover:border-indigo-500/50 hover:bg-indigo-500/10 focus-visible:ring-1 focus-visible:ring-indigo-400/50'
+                  }`}
+                  on:click={() => {
+                    navigateTo(item.id);
+                    isMobileMenuOpen = false;
+                  }}
+                >
+                  <div class="flex items-center gap-3">
+                    <span class={`flex h-9 w-9 items-center justify-center rounded-xl border ${
+                      activeView === item.id
+                        ? 'border-indigo-400/80 bg-indigo-500/20 text-indigo-100'
+                        : 'border-slate-800 bg-slate-900/80 text-slate-300'
+                    }`}>
+                      {@html sidebarIcon(item.icon)}
+                    </span>
+                    <span class="font-medium">{item.label}</span>
+                  </div>
+                  <span class="text-xs text-slate-500">{summaryCounts[item.id] ?? 0}</span>
+                </button>
+                {#if index < lifecycleNav.length - 1}
+                  <div class="pointer-events-none mt-2 flex items-center justify-center">
+                    <div class="flex items-center gap-2 text-slate-500">
+                      <div class="h-10 w-0.5 bg-gradient-to-b from-indigo-500/50 via-emerald-500/50 to-amber-500/50"></div>
+                      <svg class="h-4 w-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 5h8m0 0-3-3m3 3-3 3M16 19H8m0 0 3 3m-3-3 3-3" />
+                      </svg>
+                      <div class="h-10 w-0.5 bg-gradient-to-b from-amber-500/50 via-sky-500/50 to-rose-500/50"></div>
+                    </div>
+                  </div>
+                {/if}
+              </div>
+            {/each}
+            <div class="flex flex-col items-center gap-2 pt-1 text-xs text-indigo-200">
+              <svg class="h-8 w-8 text-indigo-300" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M26 10v10a6 6 0 0 1-6 6H9.5" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.5 26 13 22.5M9.5 26l3.5 3.5" />
+              </svg>
+              <button
+                class="rounded-full border border-indigo-500/60 bg-indigo-500/15 px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-indigo-100 hover:border-indigo-400/70 hover:bg-indigo-500/25"
+                on:click={() => navigateTo('requirements')}
+              >
+                Updated Requirements
+              </button>
+              <span class="text-[11px] text-indigo-200/70">Continuous improvement loop</span>
+            </div>
           </div>
-          <button class="flex w-full items-center justify-between rounded-xl border border-slate-800 bg-slate-900/80 px-3 py-2 text-left text-slate-200 transition hover:border-emerald-500/50 hover:bg-emerald-500/10" on:click={() => navigateTo('requirements')}>
-            <span>Requirements</span>
-            <span class="text-xs text-slate-500">{summaryCounts.requirements}</span>
-          </button>
-          <div class="flex items-center justify-center">
-            <div class="h-10 w-0.5 bg-gradient-to-b from-emerald-500/60 via-amber-500/60 to-rose-500/60"></div>
-          </div>
-          <button class="flex w-full items-center justify-between rounded-xl border border-slate-800 bg-slate-900/80 px-3 py-2 text-left text-slate-200 transition hover:border-rose-500/50 hover:bg-rose-500/10" on:click={() => navigateTo('changeRequests')}>
-            <span>Change Requests</span>
-            <span class="text-xs text-slate-500">{summaryCounts.changeRequests}</span>
-          </button>
         </div>
       </div>
     </nav>
